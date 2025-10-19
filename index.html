@@ -1,528 +1,243 @@
+<!-- ===== Improved ProCalc with Footer (Terms & Privacy) ===== -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>ProCalc - Scientific (Final)</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-  /* === Preserved ProCalc style + extended layout (final) === */
-  *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif}
-  :root{
-    --bg1:#1a2a3a;--bg2:#2c3e50;--glass:rgba(255,255,255,0.04);
-    --neon:#00e6e6;--accent:#3498db;--ok:#2ecc71;--danger:#e74c3c;
-  }
-  body{
-    min-height:100vh;background:linear-gradient(135deg,var(--bg1),var(--bg2));
-    color:#ecf0f1;display:flex;align-items:center;justify-content:center;padding:20px;
-  }
-  .wrap{width:980px;max-width:100%;display:grid;grid-template-columns:1fr 260px;gap:18px}
-  .panel{
-    background:linear-gradient(145deg,#26354a,#243444);border-radius:14px;padding:18px;
-    box-shadow:0 15px 30px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.03);
-    border:1px solid rgba(255,255,255,0.06);
-  }
-  .header{text-align:center;margin-bottom:10px}
-  .header h1{font-size:1.5rem;background:linear-gradient(to right,var(--accent),#2ecc71);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 8px var(--neon)}
-  .display{
-    background:rgba(0,0,0,0.7);border-radius:10px;padding:12px;margin-bottom:8px;
-    min-height:92px;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;
-    box-shadow:inset 0 4px 8px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.04)
-  }
-  .expression{width:100%;color:#95a5a6;font-size:0.95rem;min-height:18px;overflow:hidden;text-overflow:ellipsis}
-  .result{width:100%;font-size:2rem;color:#fff;word-break:break-all;text-align:right;text-shadow:0 0 8px var(--neon)}
-  /* mini history under display */
-  .mini-history{margin-top:8px;background:linear-gradient(145deg,#1f2a36,#172430);padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);max-height:110px;overflow:auto}
-  .mini-item{font-size:0.9rem;color:#dfe9ee;padding:6px;border-radius:6px;background:rgba(255,255,255,0.02);margin-bottom:6px;cursor:pointer}
-  .mini-item small{display:block;color:#9aa6ad;font-size:0.78rem}
-  /* keys: 6 columns for scientific layout */
-  .keys{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:10px}
-  .calc-btn{
-    border:none;border-radius:9px;padding:12px 6px;font-size:0.98rem;font-weight:600;color:#fff;
-    cursor:pointer;position:relative;overflow:hidden;min-height:48px;display:flex;align-items:center;justify-content:center;
-    transition:all .12s;box-shadow:0 6px 12px rgba(0,0,0,0.35)
-  }
-  .calc-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,0.06),transparent);border-radius:9px}
-  .calc-btn:active,.calc-btn.active{transform:translateY(3px);box-shadow:0 2px 6px rgba(0,0,0,0.45)}
-  .num{background:linear-gradient(145deg,#34495e,#2c3e50);border:1px solid rgba(255,255,255,0.04)}
-  .op{background:linear-gradient(145deg,#3498db,#2980b9);border:1px solid rgba(255,255,255,0.06)}
-  .fn{background:linear-gradient(145deg,#9b59b6,#8e44ad);border:1px solid rgba(255,255,255,0.06)}
-  .eq{background:linear-gradient(145deg,#2ecc71,#27ae60);border:1px solid rgba(255,255,255,0.06)}
-  .clr{background:linear-gradient(145deg,#e74c3c,#c0392b);border:1px solid rgba(255,255,255,0.06)}
-  .wide2{grid-column:span 2}
-  .small{font-size:0.85rem;padding:9px}
-  .kbd-hint{text-align:center;color:#95a5a6;margin-top:10px;font-size:0.84rem}
-  /* right column history & memory */
-  .side{display:flex;flex-direction:column;gap:12px}
-  .card{background:linear-gradient(145deg,#213042,#1b2a3a);border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.03)}
-  .mem-row{display:flex;gap:8px;flex-wrap:wrap}
-  .mem-btn{flex:1;min-width:48px;padding:8px;border-radius:8px;background:rgba(255,255,255,0.03);color:#fff;border:1px solid rgba(255,255,255,0.03);cursor:pointer}
-  .history-list{max-height:320px;overflow:auto;padding-top:6px;display:flex;flex-direction:column;gap:6px}
-  .hist-item{padding:8px;border-radius:8px;background:rgba(0,0,0,0.25);font-size:0.92rem;color:#dfe9ee;cursor:pointer}
-  .hist-item small{display:block;color:#9aa6ad;font-size:0.76rem}
-  @media (max-width:980px){.wrap{grid-template-columns:1fr}.side{order:2}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ProCalc - Scientific Calculator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .calculator {
+      margin-top: 40px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .display {
+      background: #222;
+      color: #0f0;
+      font-size: 2em;
+      text-align: right;
+      padding: 20px;
+      border-bottom: 2px solid #333;
+      overflow-x: auto;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      padding: 15px;
+    }
+
+    button {
+      padding: 18px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 8px;
+      background: #e0e0e0;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #d5d5d5;
+    }
+
+    button.operator {
+      background: #2196f3;
+      color: #fff;
+    }
+
+    button.equal {
+      background: #4caf50;
+      color: #fff;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      padding: 10px 0;
+      border-top: 1px solid #ccc;
+    }
+
+    .footer-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .footer-btn {
+      background: #2b2b2b;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .footer-btn:hover {
+      background: #444;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 500px;
+      width: 90%;
+      text-align: left;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .close {
+      float: right;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: red;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(-10px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+  </style>
 </head>
 <body>
-  <div class="wrap">
-    <!-- main calculator panel -->
-    <div class="panel">
-      <div class="header"><h1>ProCalc Scientific — Final</h1></div>
+  <div class="calculator">
+    <div id="display" class="display">0</div>
+    <div class="buttons">
+      <button onclick="press('7')">7</button>
+      <button onclick="press('8')">8</button>
+      <button onclick="press('9')">9</button>
+      <button class="operator" onclick="press('/')">÷</button>
 
-      <div class="display" aria-live="polite">
-        <div class="expression" id="expression"></div>
-        <div class="result" id="result">0</div>
-      </div>
+      <button onclick="press('4')">4</button>
+      <button onclick="press('5')">5</button>
+      <button onclick="press('6')">6</button>
+      <button class="operator" onclick="press('*')">×</button>
 
-      <!-- mini-history placed under display (last 5 entries) -->
-      <div class="mini-history" id="miniHistory"></div>
+      <button onclick="press('1')">1</button>
+      <button onclick="press('2')">2</button>
+      <button onclick="press('3')">3</button>
+      <button class="operator" onclick="press('-')">−</button>
 
-      <!-- keys: scientific layout -->
-      <div class="keys" id="keys">
-        <!-- row 1 -->
-        <button class="calc-btn fn small" data-action="degRad" id="degRad">DEG</button>
-        <button class="calc-btn fn small" data-action="mc">MC</button>
-        <button class="calc-btn fn small" data-action="mr">MR</button>
-        <button class="calc-btn fn small" data-action="mplus">M+</button>
-        <button class="calc-btn fn small" data-action="mminus">M-</button>
-        <button class="calc-btn clr small" data-action="clear">AC</button>
+      <button onclick="press('0')">0</button>
+      <button onclick="press('.')">.</button>
+      <button class="equal" onclick="calculate()">=</button>
+      <button class="operator" onclick="press('+')">+</button>
 
-        <!-- row 2 -->
-        <button class="calc-btn fn" data-action="sin">sin</button>
-        <button class="calc-btn fn" data-action="cos">cos</button>
-        <button class="calc-btn fn" data-action="tan">tan</button>
-        <button class="calc-btn fn" data-action="asin">sin⁻¹</button>
-        <button class="calc-btn fn" data-action="acos">cos⁻¹</button>
-        <button class="calc-btn fn" data-action="atan">tan⁻¹</button>
-
-        <!-- row 3 -->
-        <button class="calc-btn fn" data-action="ln">ln</button>
-        <button class="calc-btn fn" data-action="log">log</button>
-        <button class="calc-btn fn" data-action="tenpow">10ˣ</button>
-        <button class="calc-btn fn" data-action="exp">eˣ</button>
-        <button class="calc-btn fn" data-action="pow2">x²</button>
-        <button class="calc-btn op" data-action="divide">÷</button>
-
-        <!-- row 4 -->
-        <button class="calc-btn num" data-number="7">7</button>
-        <button class="calc-btn num" data-number="8">8</button>
-        <button class="calc-btn num" data-number="9">9</button>
-        <button class="calc-btn fn" data-action="mod">mod</button>
-        <button class="calc-btn fn" data-action="pi">π</button>
-        <button class="calc-btn op" data-action="multiply">×</button>
-
-        <!-- row 5 -->
-        <button class="calc-btn num" data-number="4">4</button>
-        <button class="calc-btn num" data-number="5">5</button>
-        <button class="calc-btn num" data-number="6">6</button>
-        <button class="calc-btn fn" data-action="inv">1/x</button>
-        <button class="calc-btn fn" data-action="e">e</button>
-        <button class="calc-btn op" data-action="subtract">−</button>
-
-        <!-- row 6 -->
-        <button class="calc-btn num" data-number="1">1</button>
-        <button class="calc-btn num" data-number="2">2</button>
-        <button class="calc-btn num" data-number="3">3</button>
-        <button class="calc-btn fn" data-action="pow">xʸ</button>
-        <button class="calc-btn fn" data-action="parenOpen">(</button>
-        <button class="calc-btn op" data-action="add">+</button>
-
-        <!-- row 7 -->
-        <button class="calc-btn num wide2" data-number="0">0</button>
-        <button class="calc-btn fn" data-action="decimal">.</button>
-        <button class="calc-btn fn" data-action="parenClose">)</button>
-        <button class="calc-btn eq wide2" data-action="calculate">=</button>
-
-      </div>
-
-      <div class="kbd-hint">Tip: keyboard & mouse supported — Enter =, Backspace, C clears.</div>
-    </div>
-
-    <!-- right column: memory & full history -->
-    <div class="side">
-      <div class="card">
-        <strong>Memory</strong>
-        <div class="mem-row" style="margin-top:8px">
-          <button class="mem-btn" data-action="mc">MC</button>
-          <button class="mem-btn" data-action="mr">MR</button>
-          <button class="mem-btn" data-action="mplus">M+</button>
-          <button class="mem-btn" data-action="mminus">M-</button>
-          <button class="mem-btn" data-action="mclearAll">CLR</button>
-        </div>
-        <div style="margin-top:10px;color:#9aa6ad;font-size:0.86rem">Memory value: <span id="memVal">0</span></div>
-      </div>
-
-      <div class="card">
-        <strong>History (full)</strong>
-        <div style="color:#9aa6ad;font-size:0.86rem;margin-top:6px">Click an entry to reuse</div>
-        <div class="history-list" id="historyList"></div>
-      </div>
-
-      <div class="card">
-        <strong>Mode</strong>
-        <div style="margin-top:8px;color:#9aa6ad;font-size:0.86rem">Angle unit: <span id="modeLabel">DEG</span></div>
-      </div>
+      <button onclick="clearDisplay()">C</button>
+      <button onclick="backspace()">⌫</button>
+      <button onclick="press('(')">(</button>
+      <button onclick="press(')')">)</button>
     </div>
   </div>
 
-<script>
-/* ==== Scientific ProCalc JS - Final ==== */
-/* Defaults: DEG mode true; mini history under display shows last 5; full history in right column (20) */
-document.addEventListener('DOMContentLoaded', () => {
-  const resultEl = document.getElementById('result');
-  const exprEl = document.getElementById('expression');
-  const miniHistoryEl = document.getElementById('miniHistory');
-  const historyList = document.getElementById('historyList');
-  const memValEl = document.getElementById('memVal');
-  const modeLabel = document.getElementById('modeLabel');
+  <footer class="footer">
+    <div class="footer-buttons">
+      <button id="termsBtn" class="footer-btn">Terms & Conditions</button>
+      <button id="privacyBtn" class="footer-btn">Privacy Policy</button>
+    </div>
+  </footer>
 
-  let display = '0';
-  let expr = '';
-  let tokens = [];
-  let memory = 0;
-  let angleInDeg = true; // start DEG by default
-  let history = []; // full history (max 20)
+  <div id="termsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" data-close="termsModal">&times;</span>
+      <h2>Terms & Conditions</h2>
+      <p>Welcome to ProCalc! By using this calculator, you agree to use it responsibly. 
+      This tool is for educational and general calculation purposes only. We do not 
+      store any of your data, and we are not liable for errors or losses caused by its use.</p>
+    </div>
+  </div>
 
-  // UI update
-  function updateUI(){
-    resultEl.textContent = display;
-    exprEl.textContent = expr;
-    memValEl.textContent = Number(memory).toString();
-    modeLabel.textContent = angleInDeg ? 'DEG' : 'RAD';
-    renderMiniHistory();
-    renderFullHistory();
-  }
+  <div id="privacyModal" class="modal">
+    <div class="modal-content">
+      <span class="close" data-close="privacyModal">&times;</span>
+      <h2>Privacy Policy</h2>
+      <p>ProCalc does not collect, share, or store any personal data. All calculations are 
+      processed locally in your browser. No information leaves your device. 
+      This ensures full privacy and security for all users.</p>
+    </div>
+  </div>
 
-  // Mini history shows last 5
-  function renderMiniHistory(){
-    miniHistoryEl.innerHTML = '';
-    const lastFive = history.slice(0,5);
-    lastFive.forEach(h => {
-      const div = document.createElement('div');
-      div.className = 'mini-item';
-      div.innerHTML = `<strong>${h.result}</strong><small>${h.expr}</small>`;
-      div.addEventListener('click', ()=> {
-        display = String(h.result); expr=''; tokens=[display]; updateUI();
+  <script>
+    const display = document.getElementById('display');
+
+    function press(value) {
+      if (display.innerText === '0') display.innerText = value;
+      else display.innerText += value;
+    }
+
+    function clearDisplay() {
+      display.innerText = '0';
+    }
+
+    function backspace() {
+      if (display.innerText.length > 1) {
+        display.innerText = display.innerText.slice(0, -1);
+      } else {
+        display.innerText = '0';
+      }
+    }
+
+    function calculate() {
+      try {
+        display.innerText = eval(display.innerText.replace('×', '*').replace('÷', '/'));
+      } catch (e) {
+        display.innerText = 'Error';
+      }
+    }
+
+    document.getElementById('termsBtn').addEventListener('click', () => {
+      document.getElementById('termsModal').style.display = 'flex';
+    });
+
+    document.getElementById('privacyBtn').addEventListener('click', () => {
+      document.getElementById('privacyModal').style.display = 'flex';
+    });
+
+    document.querySelectorAll('.close').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const target = e.target.getAttribute('data-close');
+        document.getElementById(target).style.display = 'none';
       });
-      miniHistoryEl.appendChild(div);
     });
-    if(lastFive.length===0){
-      miniHistoryEl.innerHTML = `<div style="color:#9aa6ad;font-size:0.9rem">No recent history</div>`;
-    }
-  }
 
-  function renderFullHistory(){
-    historyList.innerHTML = '';
-    history.forEach(h => {
-      const div = document.createElement('div');
-      div.className='hist-item';
-      div.innerHTML = `<strong>${h.result}</strong><small>${h.expr}</small>`;
-      div.addEventListener('click', ()=> {
-        display = String(h.result); expr=''; tokens=[display]; updateUI();
-      });
-      historyList.appendChild(div);
-    });
-  }
-
-  function pushHistoryItem(item){
-    history.unshift(item);
-    if(history.length>20) history.pop();
-    updateUI();
-  }
-
-  /* Token & expression helpers */
-  function lastToken(){ return tokens.length ? tokens[tokens.length-1] : null; }
-
-  function pushNumber(n){
-    const last = lastToken();
-    if(last != null && /^-?\d+(\.\d+)?$/.test(last)){
-      tokens[tokens.length-1] = String(last) + String(n);
-    } else {
-      tokens.push(String(n));
-    }
-    display = tokens[tokens.length-1];
-    expr = tokens.join(' ');
-    updateUI();
-  }
-
-  function pushDot(){
-    const last = lastToken();
-    if(last != null && /^-?\d+(\.\d+)?$/.test(last)){
-      if(!last.includes('.')) tokens[tokens.length-1] = last + '.';
-    } else {
-      tokens.push('0.');
-    }
-    display = tokens[tokens.length-1];
-    expr = tokens.join(' ');
-    updateUI();
-  }
-
-  function pushOp(op){
-    const last = lastToken();
-    if(!last){
-      if(op === '-') { tokens.push('u-'); expr = tokens.join(' '); updateUI(); return; }
-      return;
-    }
-    if(/^[+\-*/^%]$/.test(last) || last==='u-' || last==='(' || isFunction(last)){
-      if(op === '-') { tokens.push('u-'); expr = tokens.join(' '); updateUI(); return; }
-      return;
-    }
-    if(op === 'mod') op = '%';
-    // map friendly op to internal char
-    if(op === 'add' || op === '+') tokens.push('+');
-    else if(op === 'subtract' || op === '-') tokens.push('-');
-    else if(op === 'multiply' || op === '*') tokens.push('*');
-    else if(op === 'divide' || op === '/') tokens.push('/');
-    else if(op === '^') tokens.push('^');
-    else tokens.push(op);
-    expr = tokens.join(' ');
-    updateUI();
-  }
-
-  function pushFunc(fn){
-    tokens.push(fn);
-    tokens.push('(');
-    expr = tokens.join(' ');
-    updateUI();
-  }
-
-  function pushConst(c){
-    if(c === 'pi') tokens.push(String(Math.PI));
-    else if(c === 'e') tokens.push(String(Math.E));
-    expr = tokens.join(' ');
-    display = tokens[tokens.length-1];
-    updateUI();
-  }
-
-  function pushParen(open){
-    tokens.push(open ? '(' : ')');
-    expr = tokens.join(' ');
-    updateUI();
-  }
-
-  function backspace(){
-    const last = lastToken();
-    if(!last){ display='0'; expr=''; updateUI(); return; }
-    if(/^(-?\d+(\.\d+)?)$/.test(last)){
-      if(last.length>1) tokens[tokens.length-1] = last.slice(0,-1);
-      else tokens.pop();
-    } else {
-      tokens.pop();
-    }
-    display = tokens.length ? tokens[tokens.length-1] : '0';
-    expr = tokens.join(' ');
-    updateUI();
-  }
-
-  function clearAll(){
-    display='0'; expr=''; tokens=[]; updateUI();
-  }
-
-  /* === Shunting-yard -> RPN & evaluation === */
-  function isFunction(tok){
-    return ['sin','cos','tan','asin','acos','atan','ln','log','exp','sqrt','tenpow'].includes(tok);
-  }
-
-  function precedence(op){
-    if(op === 'u-') return 5;
-    if(op === '^') return 4;
-    if(op === '*' || op === '/' || op === '%') return 3;
-    if(op === '+' || op === '-') return 2;
-    return 0;
-  }
-
-  function associativity(op){
-    if(op === '^' || op === 'u-') return 'right';
-    return 'left';
-  }
-
-  function toRPN(arr){
-    const output=[]; const stack=[];
-    for(let tok of arr){
-      if(/^(-?\d+(\.\d+)?)$/.test(tok)) output.push(tok);
-      else if(isFunction(tok)) stack.push(tok);
-      else if(tok === ','){ while(stack.length && stack[stack.length-1] !== '(') output.push(stack.pop()); }
-      else if(/^[+\-*/^%]$/.test(tok) || tok === 'u-'){
-        while(stack.length){
-          const top = stack[stack.length-1];
-          if((isFunction(top)) ||
-             ((/^[+\-*/^%]$/.test(top) || top === 'u-') &&
-              ((associativity(tok) === 'left' && precedence(tok) <= precedence(top)) ||
-               (associativity(tok) === 'right' && precedence(tok) < precedence(top))))
-          ){ output.push(stack.pop()); continue; }
-          break;
-        }
-        stack.push(tok);
-      } else if(tok === '(') stack.push(tok);
-      else if(tok === ')'){
-        while(stack.length && stack[stack.length-1] !== '(') output.push(stack.pop());
-        stack.pop();
-        if(stack.length && isFunction(stack[stack.length-1])) output.push(stack.pop());
-      }
-    }
-    while(stack.length) output.push(stack.pop());
-    return output;
-  }
-
-  function evalRPN(rpn){
-    const st=[];
-    for(const t of rpn){
-      if(/^(-?\d+(\.\d+)?)$/.test(t)) st.push(parseFloat(t));
-      else if(t === 'u-'){ const a=st.pop(); st.push(-a); }
-      else if(isFunction(t)){ const a=st.pop(); st.push(applyFunction(t,a)); }
-      else {
-        const b=st.pop(); const a=st.pop(); st.push(applyOperator(t,a,b));
-      }
-    }
-    return st.length ? st[0] : 0;
-  }
-
-  function applyOperator(op,a,b){
-    if(op === '+') return a + b;
-    if(op === '-') return a - b;
-    if(op === '*') return a * b;
-    if(op === '/') return a / b;
-    if(op === '%') return a % b;
-    if(op === '^') return Math.pow(a,b);
-    return NaN;
-  }
-
-  function toRadiansIfNeeded(x){ return angleInDeg ? x * Math.PI/180 : x; }
-
-  function applyFunction(fn, a){
-    if(fn === 'sin') return Math.sin(toRadiansIfNeeded(a));
-    if(fn === 'cos') return Math.cos(toRadiansIfNeeded(a));
-    if(fn === 'tan') return Math.tan(toRadiansIfNeeded(a));
-    if(fn === 'asin'){ const v=Math.asin(a); return angleInDeg ? v*180/Math.PI : v; }
-    if(fn === 'acos'){ const v=Math.acos(a); return angleInDeg ? v*180/Math.PI : v; }
-    if(fn === 'atan'){ const v=Math.atan(a); return angleInDeg ? v*180/Math.PI : v; }
-    if(fn === 'ln') return Math.log(a);
-    if(fn === 'log') return Math.log10 ? Math.log10(a) : Math.log(a)/Math.LN10;
-    if(fn === 'exp') return Math.exp(a);         // e^x
-    if(fn === 'tenpow') return Math.pow(10, a);  // 10^x
-    if(fn === 'sqrt') return Math.sqrt(a);
-    return NaN;
-  }
-
-  function finalizeCalculation(){
-    if(tokens.length === 0) return;
-    try {
-      const copy = tokens.slice();
-      let open=0; copy.forEach(t => { if(t==='(') open++; if(t===')') open--; });
-      while(open>0){ copy.push(')'); open--; }
-      const rpn = toRPN(copy);
-      let value = evalRPN(rpn);
-      if(Number.isFinite(value)) value = Math.round((value + Number.EPSILON) * 1e12)/1e12;
-      pushHistoryItem({ expr: copy.join(' '), result: value });
-      display = String(value); expr=''; tokens=[display];
-    } catch(e){
-      display = 'Error'; expr=''; tokens=[];
-    }
-    updateUI();
-  }
-
-  /* button actions mapping */
-  function doFunctionButton(action){
-    switch(action){
-      case 'sin': case 'cos': case 'tan': case 'asin': case 'acos': case 'atan':
-      case 'ln': case 'log': case 'exp': case 'sqrt': case 'tenpow':
-        pushFunc(action); break;
-      case 'pow2':
-        if(lastToken() && /^-?\d+(\.\d+)?$/.test(lastToken())){
-          tokens.push('^'); tokens.push('2'); expr = tokens.join(' '); updateUI();
-        }
-        break;
-      case 'pow':
-        pushOp('^'); break;
-      case 'mod':
-        pushOp('mod'); break;
-      case 'pi': pushConst('pi'); break;
-      case 'e': pushConst('e'); break;
-      case 'inv':
-        if(lastToken() && /^-?\d+(\.\d+)?$/.test(lastToken())){
-          const v = parseFloat(tokens.pop()); tokens.push(String(1/v)); display = tokens[tokens.length-1]; expr = tokens.join(' '); updateUI();
-        }
-        break;
-      case 'decimal': pushDot(); break;
-      case 'parenOpen': pushParen(true); break;
-      case 'parenClose': pushParen(false); break;
-    }
-  }
-
-  function memoryAction(act){
-    if(act === 'mc' || act === 'mclearAll'){ memory = 0; }
-    else if(act === 'mr'){ tokens.push(String(memory)); display = String(memory); expr = tokens.join(' '); }
-    else if(act === 'mplus'){ const v=parseFloat(display)||0; memory = Number((memory + v).toString()); }
-    else if(act === 'mminus'){ const v=parseFloat(display)||0; memory = Number((memory - v).toString()); }
-    updateUI();
-  }
-
-  function toggleDegRad(){
-    angleInDeg = !angleInDeg;
-    document.getElementById('degRad').textContent = angleInDeg ? 'DEG' : 'RAD';
-    updateUI();
-  }
-
-  // attach click handlers
-  document.querySelectorAll('.calc-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const action = btn.getAttribute('data-action');
-      const number = btn.getAttribute('data-number');
-      btn.classList.add('active'); setTimeout(()=>btn.classList.remove('active'),120);
-      if(number){ pushNumber(number); return; }
-      if(action){
-        // basic op mapping
-        if(['add','subtract','multiply','divide','^','mod','%'].includes(action) ||
-           ['+','-','*','/','^','mod','%'].includes(action)){
-          if(action==='add' || action==='+') pushOp('+');
-          else if(action==='subtract' || action==='-') pushOp('-');
-          else if(action==='multiply') pushOp('*');
-          else if(action==='divide') pushOp('/');
-          else if(action==='^' || action==='pow') pushOp('^');
-          else if(action==='mod') pushOp('mod');
-          return;
-        }
-        if(['sin','cos','tan','asin','acos','atan','ln','log','exp','sqrt','tenpow','pow2','pow','mod','pi','e','inv','decimal','parenOpen','parenClose'].includes(action)){
-          doFunctionButton(action); return;
-        }
-        if(['mc','mr','mplus','mminus','mclearAll'].includes(action)){ memoryAction(action); return; }
-        if(action === 'degRad'){ toggleDegRad(); return; }
-        if(action === 'clear'){ clearAll(); return; }
-        if(action === 'backspace'){ backspace(); return; }
-        if(action === 'calculate'){ finalizeCalculation(); return; }
+    window.addEventListener('click', e => {
+      if (e.target.classList.contains('modal')) {
+        e.target.style.display = 'none';
       }
     });
-  });
-
-  // keyboard support
-  document.addEventListener('keydown', (e) => {
-    const k = e.key;
-    if(/\d/.test(k)){ pushNumber(k); return; }
-    if(k === '.') { pushDot(); return; }
-    if(k === '+' ){ pushOp('+'); return; }
-    if(k === '-' ){ pushOp('-'); return; }
-    if(k === '*' ){ pushOp('*'); return; }
-    if(k === '/' ){ pushOp('/'); return; }
-    if(k === '^' ){ pushOp('^'); return; }
-    if(k === '%'){ pushOp('mod'); return; }
-    if(k === 'Enter' || k === '='){ finalizeCalculation(); return; }
-    if(k === 'Backspace'){ backspace(); return; }
-    if(k.toLowerCase() === 'c'){ clearAll(); return; }
-    if(k.toLowerCase() === 'p'){ pushConst('pi'); return; } // quick pi
-    if(k === '('){ pushParen(true); return; }
-    if(k === ')'){ pushParen(false); return; }
-    // basic function shortcuts (optional)
-    if(k.toLowerCase() === 's'){ pushFunc('sin'); return; }
-    if(k.toLowerCase() === 'o'){ pushFunc('cos'); return; }
-    if(k.toLowerCase() === 't'){ pushFunc('tan'); return; }
-    if(k.toLowerCase() === 'l'){ pushFunc('ln'); return; }
-  });
-
-  // initialize UI & defaults
-  clearAll();
-  updateUI();
-});
-</script>
+  </script>
 </body>
 </html>
